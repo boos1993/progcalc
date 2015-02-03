@@ -10,7 +10,6 @@
 name:
     .db "progcalc", 0
 start:
-    ; This is an example program, replace it with your own!
     
     ; Get a lock on the devices we intend to use
     pcall(getLcdLock)
@@ -19,6 +18,7 @@ start:
     ; Allocate and clear a buffer to store the contents of the screen
     pcall(allocScreenBuffer)
     pcall(clearBuffer)
+    kcall(drawScreen)
 
 .loop:
     ; Copy the display buffer to the actual LCD
@@ -37,6 +37,114 @@ start:
     ; Exit when the user presses "MODE"
 
     ret
+
+updateNumber:
+    push af
+    push de
+        ;Shift over one decimal place
+        kld(de, (upperWord))
+        kld(hl, (lowerWord))
+        push af
+            ld a, 0x0A
+            pcall(mul32By8)
+        pop af
+        kld((upperWord), de)
+        kld((lowerWord), hl)       
+
+
+        ;add the new number
+        ld e, a
+        ld d, 0
+        kld(hl, (upperWord))
+        ld a, h
+        ld c, l
+        kld(ix, (lowerWord))
+        pcall(add16To32)
+        ld h, a
+        ld l, c
+        kld((upperWord), hl)
+        kld((lowerWord), ix)
+
+    pop de
+    pop af
+    ret
+
+drawScreen:
+    pcall(clearBuffer)
+    
+    ld d, 4
+    ld e, 0
+    kld(hl, (upperWord))
+    kcall(drawBits)
+
+    push af
+        ld a, d
+        add a, 9
+        ld d, a
+    pop af
+    ld h, l
+    kcall(drawBits)
+
+    ld d, 4
+    ld e, 10
+    kld(hl, (lowerWord))
+    kcall(drawBits)
+
+    push af
+        ld a, d
+        add a, 9
+        ld d, a
+    pop af
+    ld h, l
+    kcall(drawBits)
+
+    ld d, 0
+    ld e, 30
+    kld(hl, (upperWord))
+    pcall(drawHexHL)
+    kld(hl, (lowerWord))
+    pcall(drawHexHL)
+    ret
+
+;; drawBits [Text]
+;;  Draws a byte to the screen
+
+;; Inputs:
+;;  H: Byte to be displayed
+;;  A: Size of element
+drawBits:
+    push af
+    ld a, 8
+    .moreBits:
+    dec a
+    bit 7, h
+    jr nz, .one
+
+    ;draw a zero
+    push af
+        ld a, '0'
+        pcall(drawChar)
+    pop af
+    jr .skipOne
+
+    ;draw a one
+    .one:
+    push af
+        ld a, '1'
+        pcall(drawChar)
+    pop af
+
+    
+    .skipOne:
+    inc d ;add padding between bits
+    SLA h ;shift left
+    
+    cp 0   
+    jr nz, .moreBits
+
+    pop af
+    ret
+
 
 checkKeys:
     push af
@@ -107,125 +215,18 @@ checkKeys:
         push hl
             ld de, 0
             ld hl, 0
-            kld((leftNumber), de)
-            kld((rightNumber), hl)
+            kld((upperWord), de)
+            kld((lowerWord), hl)
         pop hl
         pop de
         _:
 
-
     pop af
     ret
 
-updateNumber:
-    push af
-    push de
-        ;Shift over one decimal place
-        kld(de, (leftNumber))
-        kld(hl, (rightNumber))
-        push af
-            ld a, 0x0A
-            pcall(mul32By8)
-        pop af
-        kld((leftNumber), de)
-        kld((rightNumber), hl)       
-
-
-        ;add the new number
-        ld e, a
-        ld d, 0
-        kld(hl, (leftNumber))
-        ld a, h
-        ld c, l
-        kld(ix, (rightNumber))
-        pcall(add16To32)
-        ld h, a
-        ld l, c
-        kld((leftNumber), hl)
-        kld((rightNumber), ix)
-
-    pop de
-    pop af
-    ret
-
-drawScreen:
-    pcall(clearBuffer)
-    
-    ld d, 4
-    ld e, 0
-    kld(hl, (leftNumber))
-    kcall(drawBits)
-
-    push af
-        ld a, d
-        add a, 9
-        ld d, a
-    pop af
-    ld h, l
-    kcall(drawBits)
-
-    ld d, 4
-    ld e, 10
-    kld(hl, (rightNumber))
-    kcall(drawBits)
-
-    push af
-        ld a, d
-        add a, 9
-        ld d, a
-    pop af
-    ld h, l
-    kcall(drawBits)
-
-    ld d, 0
-    ld e, 30
-    kld(hl, (leftNumber))
-    pcall(drawHexHL)
-    kld(hl, (rightNumber))
-    pcall(drawHexHL)
-    ret
-
-drawBits:
-    push af
-    
-    ld a, 8
-
-    moreBits:
-    dec a
-
-    bit 7, h
-    jr nz, one
-
-    push af
-        ld a, '0'
-        pcall(drawChar)
-    pop af
-    jr _
-
-    one:
-    push af
-        ld a, '1'
-        pcall(drawChar)
-    pop af
-
-    _:
-    
-    inc d
-    SLA h
-
-
-    cp 0
-
-    jr nz, moreBits
-
-    pop af
-    ret
-
-message:
-    .db "Programmer Calc v0.1", 0
-leftNumber:
+upperWord:
     .dw 0
-rightNumber:
+lowerWord:
     .dw 0
 digits:
     .db 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 
