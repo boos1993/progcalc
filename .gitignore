@@ -1,2 +1,5 @@
 .knightos/
 bin/
+*.*~
+*.pkg
+
