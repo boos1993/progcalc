@@ -44,14 +44,30 @@ start:
 
     ret
 
-updateNumber:
+addDigit:
     push af
     push de
         ;Shift over one decimal place
         kld(de, (upperWord))
         kld(hl, (lowerWord))
         push af
+            kld(a, (numberBase))
+            cp 0
+            jr z, .decimalShift
+            cp 1
+            jr z, .hexShift
+            cp 2
+            jr z, .binaryShift
+.decimalShift:
             ld a, 0x0A
+            jr .endShift
+.hexShift:
+            ld a, 0x10
+            jr .endShift
+.binaryShift:
+            ld a, 0x02
+            jr .endShift
+.endShift:
             pcall(mul32By8)
         pop af
         kld((upperWord), de)
@@ -120,13 +136,9 @@ drawScreen:
         kld(a, (numberBase))
         cp 0
         jr z, .decimalDraw
-
-        kld(a, (numberBase))
         cp 1
         jr z, .hexDraw
-
-        kld(a, (numberBase))
-        cp 3
+        cp 2
         jr z, .binaryDraw
 
 .binaryDraw:  
@@ -134,9 +146,9 @@ drawScreen:
         ld d, 4
         ld e, 40
         kld(hl, (upperWord))
-        pcall(drawHexHL)
+        ;pcall(drawHexHL)
         kld(hl, (lowerWord))
-        pcall(drawHexHL)
+        ;pcall(drawHexHL)
         jr .endDraw
 .hexDraw:  
         ;Draw Hex
@@ -218,7 +230,7 @@ checkKeys:
             kld((upperWord), de)
             kld((lowerWord), hl)
             ld a, 0
-            kcall(updateNumber)
+            kcall(addDigit)
             kcall(drawScreen)
         pop hl
         pop de
@@ -244,65 +256,119 @@ _:
         kcall(drawScreen)
 _:
 
+
         cp k0
         jr nz, _
         ld a, 0
-        kcall(updateNumber)
+        kcall(addDigit)
 _:
-    
         cp k1
         jr nz, _
         ld a, 1
-        kcall(updateNumber)
+        kcall(addDigit)
 _:
-    
+        push bc
+            ld b, a
+            kld(a, (numberBase))
+            cp 2
+            ld a, b
+        pop bc
+        kjp(z, .endKeys)
+        
         cp k2
         jr nz, _
         ld a, 2
-        kcall(updateNumber)
+        kcall(addDigit)
 _:
     
         cp k3
         jr nz, _
         ld a, 3
-        kcall(updateNumber)
+        kcall(addDigit)
 _:
     
         cp k4
         jr nz, _
         ld a, 4
-        kcall(updateNumber)
+        kcall(addDigit)
 _:
     
         cp k5
         jr nz, _
         ld a, 5
-        kcall(updateNumber)
+        kcall(addDigit)
 _:
     
         cp k6
         jr nz, _
         ld a, 6
-        kcall(updateNumber)
+        kcall(addDigit)
 _:
     
         cp k7
         jr nz, _
         ld a, 7
-        kcall(updateNumber)
+        kcall(addDigit)
 _:
     
         cp k8
         jr nz, _
         ld a, 8
-        kcall(updateNumber)
+        kcall(addDigit)
 _:
     
         cp k9
         jr nz, _
         ld a, 9
-        kcall(updateNumber)
+        kcall(addDigit)
 _:
+        push bc
+            ld b, a
+            kld(a, (numberBase))
+            cp 0
+            ld a, b
+        pop bc
+        kjp(z, .endKeys)
+
+
+        ;HEXADECIMAL KEYS
+        cp kA
+        jr nz, _
+        ld a, 0x0A
+        kcall(addDigit)
+_:
+    
+        cp kB
+        jr nz, _
+        ld a, 0x0B
+        kcall(addDigit)
+_:
+    
+        cp kC
+        jr nz, _
+        ld a, 0x0C
+        kcall(addDigit)
+_:
+    
+        cp kD
+        jr nz, _
+        ld a, 0x0D
+        kcall(addDigit)
+_:
+    
+        cp kE
+        jr nz, _
+        ld a, 0x0E
+        kcall(addDigit)
+_:
+
+        cp kF
+        jr nz, _
+        ld a, 0x0F
+        kcall(addDigit)
+_:
+
+.endKeys:
 
     pop af
     ret
