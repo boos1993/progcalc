@@ -98,12 +98,26 @@ drawScreen:
     ld h, l
     kcall(drawBits)
 
-    ld d, 0
-    ld e, 30
-    kld(hl, (upperWord))
-    pcall(drawHexHL)
-    kld(hl, (lowerWord))
-    pcall(drawHexHL)
+    push hl
+    push ix
+        ld d, 0
+        ld e, 30
+        kld(hl, (upperWord))
+        ld a, h
+        ld c, l
+        kld(hl, (lowerWord))
+        ld ixh, h
+        ld ixl, l
+        pcall(drawDecACIX)
+    
+        ld d, 0
+        ld e, 40
+        kld(hl, (upperWord))
+        pcall(drawHexHL)
+        kld(hl, (lowerWord))
+        pcall(drawHexHL)
+    pop ix
+    pop hl
     ret
 
 ;; drawBits [Text]
@@ -213,8 +227,8 @@ checkKeys:
         jr nz, _
         push de
         push hl
-            ld de, 0
-            ld hl, 0
+            ld de, 0x0000
+            ld hl, 0x0000
             kld((upperWord), de)
             kld((lowerWord), hl)
         pop hl
