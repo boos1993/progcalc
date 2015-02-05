@@ -79,7 +79,6 @@ removeDigit:
                         
             push iy
                 ld iyh, b
-                ld de, 10
                 pcall(div32By16)     ;Divide ACIX by 10...
                 ld b, iyh
             pop iy
