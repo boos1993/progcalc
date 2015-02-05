@@ -12,14 +12,14 @@ name:
     .db "progcalc", 0
 start:
     
-    ; Get a lock on the devices we intend to use
+    ;Get a lock on the devices we intend to use
     pcall(getLcdLock)
     pcall(getKeypadLock)
 
-    ; Allocate and clear a buffer to store the contents of the screen
+    ;Allocate and clear a buffer to store the contents of the screen
     pcall(allocScreenBuffer)
 
-    ; Load dependencies
+    ;Load dependencies
     kld(de, corelibPath)
     pcall(loadLibrary)
 
@@ -27,12 +27,12 @@ start:
     kcall(drawScreen)
 
 .loop:
-    ; Copy the display buffer to the actual LCD
+    ;Copy the display buffer to the actual LCD
     pcall(fastCopy)
 
-    ; flushKeys waits for all keys to be released
+    ;flushKeys waits for all keys to be released
     pcall(flushKeys)
-    ; waitKey waits for a key to be pressed, then returns the key code in A
+    ;waitKey waits for a key to be pressed, then returns the key code in A
     pcall(waitKey)
 
     kcall(checkKeys)
@@ -48,6 +48,7 @@ removeDigit:
     push af
     push de
     push bc
+    push ix
 
         ;Load into ACIX
         kld(de, (upperWord))
@@ -59,27 +60,27 @@ removeDigit:
         push af
             kld(a, (numberBase))
             cp 0
-            jr z, .decimalShift
+            jr z, .decimalShiftR
             cp 1
-            jr z, .hexShift
+            jr z, .hexShiftR
             cp 2
-            jr z, .binaryShift
-.decimalShift:
+            jr z, .binaryShiftR
+.decimalShiftR:
             ld de, 0x0A
-            jr .endShift
-.hexShift:
+            jr .endShiftR
+.hexShiftR:
             ld de, 0x10
-            jr .endShift
-.binaryShift:
+            jr .endShiftR
+.binaryShiftR:
             ld de, 0x02
-            jr .endShift
-.endShift:
+            jr .endShiftR
+.endShiftR:
         pop af
-
+                        
             push iy
                 ld iyh, b
                 ld de, 10
-                call div32By16     ;Divide ACIX by 10...
+                pcall(div32By16)     ;Divide ACIX by 10...
                 ld b, iyh
             pop iy
 
@@ -87,7 +88,7 @@ removeDigit:
         ld e, c
         kld((upperWord), de)
         kld((lowerWord), ix)
-
+    pop ix
     pop bc
     pop de
     pop af
@@ -285,10 +286,11 @@ checkKeys:
         pop de
 _:
 
-        cp kDel
+        cp kDown
         jr nz, _
             kcall(removeDigit)
             kcall(drawScreen)
+kcall(drawScreen)
  _:
 
         cp kYEqu
