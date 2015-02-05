@@ -44,6 +44,55 @@ start:
 
     ret
 
+removeDigit:
+    push af
+    push de
+    push bc
+
+        ;Load into ACIX
+        kld(de, (upperWord))
+        ld a, d
+        ld c, e
+        kld(ix, (lowerWord))
+
+        ;Shift over one decimal place
+        push af
+            kld(a, (numberBase))
+            cp 0
+            jr z, .decimalShift
+            cp 1
+            jr z, .hexShift
+            cp 2
+            jr z, .binaryShift
+.decimalShift:
+            ld de, 0x0A
+            jr .endShift
+.hexShift:
+            ld de, 0x10
+            jr .endShift
+.binaryShift:
+            ld de, 0x02
+            jr .endShift
+.endShift:
+        pop af
+
+            push iy
+                ld iyh, b
+                ld de, 10
+                call div32By16     ;Divide ACIX by 10...
+                ld b, iyh
+            pop iy
+
+        ld d, a
+        ld e, c
+        kld((upperWord), de)
+        kld((lowerWord), ix)
+
+    pop bc
+    pop de
+    pop af
+    ret
+
 addDigit:
     push af
     push de
@@ -235,6 +284,13 @@ checkKeys:
         pop hl
         pop de
 _:
+
+        cp kDel
+        jr nz, _
+            kcall(removeDigit)
+            kcall(drawScreen)
+ _:
+
         cp kYEqu
         jr nz, _
         corelib(launchCastle)
