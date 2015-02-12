@@ -48,7 +48,7 @@ removeDigit:
     push af
     push de
     push bc
-    push ix
+;    push ix
 
         ;Load into ACIX
         kld(de, (upperWord))
@@ -87,7 +87,7 @@ removeDigit:
         ld e, c
         kld((upperWord), de)
         kld((lowerWord), ix)
-    pop ix
+;    pop ix
     pop bc
     pop de
     pop af
