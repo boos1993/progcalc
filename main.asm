@@ -48,14 +48,17 @@ removeDigit:
     push af
     push de
     push bc
-;    push ix
+    push ix
 
         ;Load into ACIX
-        kld(de, (upperWord))
-        ld a, d
-        ld c, e
-        kld(ix, (lowerWord))
-
+        push hl
+            kld(hl, (upperWord))
+            ld a, h
+            ld c, l
+            kld(hl, (lowerWord))
+            ld ixh, h
+            ld ixl, l
+        pop hl
         ;Shift over one decimal place
         push af
             kld(a, (numberBase))
@@ -83,11 +86,15 @@ removeDigit:
                 ld b, iyh
             pop iy
 
-        ld d, a
-        ld e, c
-        kld((upperWord), de)
-        kld((lowerWord), ix)
-;    pop ix
+        push hl
+            ld h, a
+            ld a, c
+            kld((upperWord), hl)
+            ld h, ixh
+            ld l, ixl
+            kld((lowerWord), ix)
+        pop hl
+    pop ix
     pop bc
     pop de
     pop af
@@ -97,7 +104,9 @@ addDigit:
     push af
     push de
         ;Shift over one decimal place
-        kld(de, (upperWord))
+        kld(hl, (upperWord))
+        ld d, h
+        ld e, l
         kld(hl, (lowerWord))
         push af
             kld(a, (numberBase))
@@ -118,23 +127,30 @@ addDigit:
             jr .endShift
 .endShift:
             pcall(mul32By8)
-        pop af
-        kld((upperWord), de)
-        kld((lowerWord), hl)       
-
+        pop af 
+        ;push hl
+        ;    ld h, d
+        ;    ld l, e
+        ;    kld((upperWord), hl)
+        ;pop hl
+        ;kld((lowerWord), hl)       
 
         ;add the new number
-        ld e, a
+        ld a, d
+        ld c, e
+        ld ixh, h
+        ld ixl, l
+        
         ld d, 0
-        kld(hl, (upperWord))
-        ld a, h
-        ld c, l
-        kld(ix, (lowerWord))
+        ld e, 1
         pcall(add16To32)
+        
         ld h, a
         ld l, c
         kld((upperWord), hl)
-        kld((lowerWord), ix)
+        ld h, ixh
+        ld l, ixl
+        kld((lowerWord), hl)
     pop de
     pop af
     ret
@@ -274,12 +290,10 @@ checkKeys:
         jr nz, _
         push de
         push hl
-            ld de, 0x0000
             ld hl, 0x0000
-            kld((upperWord), de)
+            kld((upperWord), hl)
             kld((lowerWord), hl)
             ld a, 0
-            kcall(addDigit)
             kcall(drawScreen)
         pop hl
         pop de
@@ -288,8 +302,6 @@ _:
         cp kDown
         jr nz, _
             kcall(removeDigit)
-            kcall(drawScreen)
-kcall(drawScreen)
  _:
 
         cp kYEqu
