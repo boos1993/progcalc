@@ -51,10 +51,12 @@ removeDigit:
 ;    push ix
 
         ;Load into ACIX
-        kld(de, (upperWord))
-        ld a, d
-        ld c, e
-        kld(ix, (lowerWord))
+        kld(hl, (upperWord))
+        ld a, h
+        ld c, l
+        kld(hl, (lowerWord))
+        ld ixh, h
+        ld ixl, l
 
         ;Shift over one decimal place
         push af
@@ -97,7 +99,9 @@ addDigit:
     push af
     push de
         ;Shift over one decimal place
-        kld(de, (upperWord))
+        kld(hl, (upperWord))
+        ld d, h
+        ld e, l
         kld(hl, (lowerWord))
         push af
             kld(a, (numberBase))
@@ -119,17 +123,27 @@ addDigit:
 .endShift:
             pcall(mul32By8)
         pop af
-        kld((upperWord), de)
+        push hl
+            ld h, d
+            ld l, e
+            kld((upperWord), hl)
+        pop hl
         kld((lowerWord), hl)       
 
-
-        ;add the new number
-        ld e, a
-        ld d, 0
-        kld(hl, (upperWord))
-        ld a, h
-        ld c, l
+        ld b, a
+        
+        ld a, d
+        ld c, e
         kld(ix, (lowerWord))
+        ;add the new number
+        ld d, 0
+        ld e, b
+        ;kld(hl, (upperWord))
+        ;ld a, h
+        ;ld c, l
+        ;kld(hl, (upperWord))
+        ;ld ixh, h
+        
         pcall(add16To32)
         ld h, a
         ld l, c
@@ -215,9 +229,7 @@ drawScreen:
         kld(hl, (upperWord))
         ld a, h
         ld c, l
-        kld(hl, (lowerWord))
-        ld ixh, h
-        ld ixl, l
+        kld(ix, (lowerWord))
         pcall(drawDecACIX)
         jr .endDraw
 .endDraw:
