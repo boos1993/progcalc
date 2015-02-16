@@ -2,18 +2,37 @@
 checkKeys:
     push af
 
-        cp kClear
+        ;cp kClear
+        cp kMode
         jr nz, _
         push de
         push hl
-            ;TODO: if newNumber is zero...then clear operator and oldNumber...else clear newNumber
-            ;ld de, 0x0000
-            ld hl, 0x0000
+        push af
+            ld de, 0
+
+            kld(hl, (lowerWord))
+            pcall(cpHLDE)
+            jr nz, .notZeroClear
+            
+            kld(hl, (upperWord))
+            pcall(cpHLDE)
+            jr nz, .notZeroClear
+
+            ld a, 0
+            kld((operator), a)
+ 
+            ld hl, 0
+            kld((oldUpperWord), hl)
+            kld((oldLowerWord), hl)
+
+            jr .endClear
+.notZeroClear:    
+        ld hl, 0x0000
             kld((upperWord), hl)
             kld((lowerWord), hl)
             ld a, 0
-           ; kcall(addDigit)
-           ; kcall(drawScreen)
+.endClear:
+        pop af
         pop hl
         pop de
 _:

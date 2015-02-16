@@ -49,7 +49,93 @@ drawScreen:
 
 
 
+
+        ;Skip Draw oldNumber and operator if no operator
+        kld(a, (operator))
+        cp 0
+        kjp(z, .drawNewNumber)
+
+
+;----------OldNumber-----------
+        ld d, 4
+        ld e, 30
+        
+        kld(a, (numberBase))
+        cp 0
+        jr z, .oldDecimalDraw
+        cp 1
+        jr z, .oldHexDraw
+        cp 2
+        jr z, .oldBinaryDraw
+
+.oldBinaryDraw:  
+        ;Draw Binary
+        kld(hl, (oldUpperWord))
+        ;pcall(drawHexHL)
+        kld(hl, (oldLowerWord))
+        ;pcall(drawHexHL)
+        jr .oldEndDraw
+.oldHexDraw:  
+        ;Draw Hex
+        kld(hl, (oldUpperWord))
+        pcall(drawHexHL)
+        kld(hl, (oldLowerWord))
+        pcall(drawHexHL)
+        jr .oldEndDraw
+.oldDecimalDraw:     
+        ;Draw Decimal
+        kld(hl, (oldUpperWord))
+        ld a, h
+        ld c, l
+        kld(ix, (oldLowerWord))
+        pcall(drawDecACIX)
+        jr .oldEndDraw
+.oldEndDraw:
+
+;----------Operator -----------
+        ld d, 4
+        ld e, 40
+        
+        kld(a, (operator))
+        cp 0
+        jr z, .drawNewNumber
+        cp 1
+        jr z, .drawPlus
+        cp 2
+        jr z, .drawMinus
+        cp 3
+        jr z, .drawMul
+        cp 4
+        jr z, .drawDiv
+
+
+.drawPlus:
+        ld a, '+'
+        pcall(drawChar)
+        jr .drawNewNumber
+
+.drawMinus:
+        ld a, '-'
+        pcall(drawChar)
+        jr .drawNewNumber
+
+.drawMul:
+        ld a, '*'
+        pcall(drawChar)
+        jr .drawNewNumber
+
+.drawDiv:
+        ld a, '/'
+        pcall(drawChar)
+        jr .drawNewNumber
+
+
+
 ;----------NewNumber-----------
+.drawNewNumber:
+        ld d, 4
+        ld e, 50
+
         kld(a, (numberBase))
         cp 0
         jr z, .decimalDraw
@@ -60,8 +146,6 @@ drawScreen:
 
 .binaryDraw:  
         ;Draw Binary
-        ld d, 4
-        ld e, 40
         kld(hl, (upperWord))
         ;pcall(drawHexHL)
         kld(hl, (lowerWord))
@@ -69,8 +153,6 @@ drawScreen:
         jr .endDraw
 .hexDraw:  
         ;Draw Hex
-        ld d, 4
-        ld e, 40
         kld(hl, (upperWord))
         pcall(drawHexHL)
         kld(hl, (lowerWord))
@@ -78,8 +160,6 @@ drawScreen:
         jr .endDraw
 .decimalDraw:     
         ;Draw Decimal
-        ld d, 4
-        ld e, 40
         kld(hl, (upperWord))
         ld a, h
         ld c, l
