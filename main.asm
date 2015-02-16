@@ -48,35 +48,34 @@ removeDigit:
     push af
     push de
     push bc
-;    push ix
+    push ix
+    push hl
 
         ;Load into ACIX
         kld(hl, (upperWord))
         ld a, h
         ld c, l
-        kld(hl, (lowerWord))
-        ld ixh, h
-        ld ixl, l
+        kld(ix, (lowerWord))
 
         ;Shift over one decimal place
         push af
             kld(a, (numberBase))
             cp 0
-            jr z, .decimalShiftR
+            jr z, .decimalShift
             cp 1
-            jr z, .hexShiftR
+            jr z, .hexShift
             cp 2
-            jr z, .binaryShiftR
-.decimalShiftR:
+            jr z, .binaryShift
+.decimalShift:
             ld de, 0x0A
-            jr .endShiftR
-.hexShiftR:
+            jr .endShift
+.hexShift:
             ld de, 0x10
-            jr .endShiftR
-.binaryShiftR:
+            jr .endShift
+.binaryShift:
             ld de, 0x02
-            jr .endShiftR
-.endShiftR:
+            jr .endShift
+.endShift:
         pop af
                         
             push iy
@@ -89,7 +88,8 @@ removeDigit:
         ld e, c
         kld((upperWord), de)
         kld((lowerWord), ix)
-;    pop ix
+    pop hl
+    pop ix
     pop bc
     pop de
     pop af
