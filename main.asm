@@ -153,6 +153,7 @@ addDigit:
     pop af
     ret
 
+
 drawScreen:
     pcall(clearBuffer)
     push af
@@ -160,10 +161,15 @@ drawScreen:
     push hl
     push ix
 
+
+;----------Window-----------
         kld(hl, windowTitle)
         ld a, 0x04
         corelib(drawWindow)
 
+
+
+;----------Binary-----------
         ld d, 4
         ld e, 10
         kld(hl, (upperWord))
@@ -196,6 +202,10 @@ drawScreen:
         ld l, 26
         pcall(drawLine)
 
+
+
+
+;----------NewNumber-----------
         kld(a, (numberBase))
         cp 0
         jr z, .decimalDraw
@@ -278,6 +288,136 @@ drawBits:
     pop af
     ret
 
+;; calculate
+;;  Calculates oldNumber (operator) newNumber
+;;  Stores the result in newNumber and clears the operator
+;; Inputs:
+calculate:
+    push af
+    push hl
+        kld(a, (operator))
+        cp 0
+        jr z, .noOP
+        cp 1
+        jr z, .add
+        cp 2
+        jr z, .sub
+        cp 3
+        jr z, .div
+        cp 4
+        jr z, .mul
+
+.noOP:
+        ;No Operator
+        jr .endOP
+
+.add:
+        ;Addition [ACIX = ACIX + DE]
+        push af
+        push bc
+        push ix
+        push de
+        push hl
+            ;Load Old Number
+            kld(hl, (oldUpperWord))
+            ld a, h
+            ld c, l
+            kld(ix, (oldLowerWord))
+            
+            ;Load New Number
+            kld(hl, (lowerWord))
+            ld d, h
+            ld e, l
+            
+            pcall(add16To32)
+            
+            ;Store ACIX into newNumber
+            ld h, a
+            ld l, c
+            kld((upperWord), hl)
+            kld((lowerWord), ix)
+        pop hl
+        pop de
+        pop ix
+        pop bc
+        pop af
+        jr .endOP
+
+.sub:
+        ;Subtraction [ACIX = ACIX - DE]
+        push af
+        push bc
+        push ix
+        push de
+        push hl
+            ;Load Old Number
+            kld(hl, (oldUpperWord))
+            ld a, h
+            ld c, l
+            kld(ix, (oldLowerWord))
+            
+            ;Load New Number
+            kld(hl, (lowerWord))
+            ld d, h
+            ld e, l
+            
+            pcall(sub16From32)
+            
+            ;Store ACIX into newNumber
+            ld h, a
+            ld l, c
+            kld((upperWord), hl)
+            kld((lowerWord), ix)
+        pop hl
+        pop de
+        pop ix
+        pop bc
+        pop af
+        jr .endOP
+
+.div:
+        ;Division
+        ;TODO:oldNumber / newNumber
+        jr .endOP
+
+.mul:
+        ;Multiplication
+        ;TODO:oldNumber * newNumber
+        jr .endOP
+
+.endOP:
+        ;Clear Operator
+        ld a, 0
+        kld((operator), a)
+        
+        ;Clear Old Number
+        ld hl, 0
+        kld((oldUpperWord), hl)
+        kld((oldLowerWord), hl)
+
+
+    pop hl
+    pop af
+    ret
+
+
+;; mvNewToOld
+;;  Moves the new number into the old number
+;;  Sets the new number to zero
+;; Inputs:
+mvNewToOld:
+    push hl
+       kld(hl, (upperWord))
+       kld((oldUpperWord), hl)
+       kld(hl, (lowerWord))
+       kld((oldLowerWord), hl)
+       ;clear newNumber
+       ld hl, 0
+       kld((upperWord), hl)
+       kld((lowerWord), hl)
+    pop hl
+    ret
+
 
 checkKeys:
     push af
@@ -286,13 +426,14 @@ checkKeys:
         jr nz, _
         push de
         push hl
-            ld de, 0x0000
+            ;TODO: if newNumber is zero...then clear operator and oldNumber...else clear newNumber
+            ;ld de, 0x0000
             ld hl, 0x0000
-            kld((upperWord), de)
+            kld((upperWord), hl)
             kld((lowerWord), hl)
             ld a, 0
-            kcall(addDigit)
-            kcall(drawScreen)
+           ; kcall(addDigit)
+           ; kcall(drawScreen)
         pop hl
         pop de
 _:
@@ -300,8 +441,6 @@ _:
         cp kDown
         jr nz, _
             kcall(removeDigit)
-            kcall(drawScreen)
-kcall(drawScreen)
  _:
 
         cp kYEqu
@@ -322,10 +461,59 @@ _:
         jr z, .cancel
         kld((numberBase), a)
 .cancel:
-        kcall(drawScreen)
 _:
 
 
+;----------Operators-----------
+        cp kEnter
+        jr nz, _
+        kcall(calculate)
+_:
+
+        ;cp kPlus
+        cp kRight
+        jr nz, _
+        kcall(calculate)
+        kcall(mvNewToOld)
+        push af
+            ld a, 1
+            kld((operator), a)
+        pop af
+_:
+
+        ;cp kMinus
+        cp kLeft
+        jr nz, _
+        kcall(calculate)
+        kcall(mvNewToOld)
+        push af
+            ld a, 2
+            kld((operator), a)
+        pop af
+_:
+
+        cp kMul
+        jr nz, _
+        kcall(calculate)
+        kcall(mvNewToOld)
+        push af
+            ld a, 3
+            kld((operator), a)
+        pop af
+_:
+
+        cp kDiv
+        jr nz, _
+        kcall(calculate)
+        kcall(mvNewToOld)
+        push af
+            ld a, 4
+            kld((operator), a)
+        pop af
+_:
+
+
+;------------Digits------------
         cp k0
         jr nz, _
         ld a, 0
@@ -453,9 +641,16 @@ corelibPath:
     .db "/lib/core", 0
 numberBase:
     .db 0
+
+operator:
+    .db 0
 upperWord:
     .dw 0
 lowerWord:
     .dw 0
-digits:
-    .db 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 
+
+oldUpperWord:
+    .dw 0
+oldLowerWord:
+    .dw 0
+
