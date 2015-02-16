@@ -297,19 +297,19 @@ calculate:
     push hl
         kld(a, (operator))
         cp 0
-        jr z, .noOP
+        kjp(z, .noOP)
         cp 1
-        jr z, .add
+        kjp(z, .add)
         cp 2
-        jr z, .sub
+        kjp(z, .sub)
         cp 3
-        jr z, .div
+        kjp(z, .mul)
         cp 4
-        jr z, .mul
+        kjp(z, .div)
 
 .noOP:
         ;No Operator
-        jr .endOP
+        kjp(.endOP)
 
 .add:
         ;Addition [ACIX = ACIX + DE]
@@ -341,7 +341,7 @@ calculate:
         pop ix
         pop bc
         pop af
-        jr .endOP
+        kjp(.endOP)
 
 .sub:
         ;Subtraction [ACIX = ACIX - DE]
@@ -373,17 +373,70 @@ calculate:
         pop ix
         pop bc
         pop af
-        jr .endOP
-
-.div:
-        ;Division
-        ;TODO:oldNumber / newNumber
-        jr .endOP
+        kjp(.endOP)
 
 .mul:
-        ;Multiplication
-        ;TODO:oldNumber * newNumber
-        jr .endOP
+        ;Multiplication [DEHL = DEHL * A]
+        push af
+        push de
+        push hl
+            ;Load Old Number
+            kld(hl, (oldUpperWord))
+            ld d, h
+            ld e, l
+            kld(hl, (oldLowerWord))
+            
+            ;Load New Number
+            push hl
+                kld(hl, (lowerWord))
+                ld a, l
+            pop hl
+
+            pcall(mul32By8)
+            
+            ;Store DEHL into newNumber
+            kld((lowerWord), hl)
+            ld h, d
+            ld l, e
+            kld((upperWord), hl)
+        pop hl
+        pop de
+        pop af
+        kjp(.endOP)
+
+.div:
+        ;Division [ACIX = ACIX / DE]
+        push af
+        push bc
+        push ix
+        push de
+        push hl
+            ;Load Old Number
+            kld(hl, (oldUpperWord))
+            ld a, h
+            ld c, l
+            kld(ix, (oldLowerWord))
+            
+            ;Load New Number
+            push hl
+                kld(hl, (lowerWord))
+                ld d, h
+                ld e, l
+            pop hl
+
+            pcall(div32By16)
+            
+            ;Store ACIX into newNumber
+            ld h, a
+            ld l, c
+            kld((upperWord), hl)
+            kld((lowerWord), ix)
+        pop hl
+        pop de
+        pop ix
+        pop bc
+        pop af
+        kjp(.endOP)
 
 .endOP:
         ;Clear Operator
@@ -470,8 +523,8 @@ _:
         kcall(calculate)
 _:
 
-        ;cp kPlus
-        cp kRight
+        cp kPlus
+        ;cp kRight
         jr nz, _
         kcall(calculate)
         kcall(mvNewToOld)
@@ -481,8 +534,8 @@ _:
         pop af
 _:
 
-        ;cp kMinus
-        cp kLeft
+        cp kMinus
+        ;cp kLeft
         jr nz, _
         kcall(calculate)
         kcall(mvNewToOld)
@@ -492,7 +545,8 @@ _:
         pop af
 _:
 
-        cp kMul
+        ;cp kMul
+        cp kRight
         jr nz, _
         kcall(calculate)
         kcall(mvNewToOld)
@@ -502,7 +556,8 @@ _:
         pop af
 _:
 
-        cp kDiv
+        ;cp kDiv
+        cp kLeft
         jr nz, _
         kcall(calculate)
         kcall(mvNewToOld)
