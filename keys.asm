@@ -1,9 +1,33 @@
+#define DEBUG 1
+
+#if DEBUG
+    #define plusKey kRight
+    #define minusKey kLeft
+    #define mulKey kUp
+    #define divKey kDown
+    #define delKey kWindow
+    #define enterKey kEnter
+    #define clearKey kClear
+    #define castleKey kYEqu
+    #define threadKey kGraph
+    #define menuKey kZoom
+#else
+    #define plusKey kPlus
+    #define minusKey kMinus
+    #define mulKey kMul
+    #define divKey kDiv
+    #define delKey kDel
+    #define enterKey kEnter
+    #define clearKey kClear
+    #define castleKey kYEqu
+    #define threadKey kGraph
+    #define menuKey kZoom
+#endif
 
 checkKeys:
     push af
 
-        cp kClear
-       ; cp kMode
+        cp clearKey
         jr nz, _
         push de
         push hl
@@ -37,22 +61,21 @@ checkKeys:
         pop de
 _:
 
-        ;cp kDown
-        cp kDel
+        cp delKey
         jr nz, _
         kcall(removeDigit)
  _:
 
-        cp kYEqu
+        cp castleKey
         jr nz, _
         corelib(launchCastle)
 _:
 
-        cp kGraph
+        cp threadKey
         jr nz, _
         corelib(launchThreadList)
 _:
-        cp kZoom
+        cp menuKey
         jr nz, _
         ld c, 40
         kld(hl, menu)
@@ -65,13 +88,12 @@ _:
 
 
 ;----------Operators-----------
-        cp kEnter
+        cp enterKey
         jr nz, _
         kcall(calculate)
 _:
 
-        cp kPlus
-        ;cp kRight
+        cp plusKey
         jr nz, _
         kcall(calculate)
         kcall(mvNewToOld)
@@ -81,8 +103,7 @@ _:
         pop af
 _:
 
-        cp kMinus
-        ;cp kLeft
+        cp minusKey
         jr nz, _
         kcall(calculate)
         kcall(mvNewToOld)
@@ -92,8 +113,7 @@ _:
         pop af
 _:
 
-        cp kMul
-        ;cp kRight
+        cp mulKey
         jr nz, _
         kcall(calculate)
         kcall(mvNewToOld)
@@ -103,8 +123,7 @@ _:
         pop af
 _:
 
-        cp kDiv
-        ;cp kLeft
+        cp divKey
         jr nz, _
         kcall(calculate)
         kcall(mvNewToOld)

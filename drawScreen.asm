@@ -28,7 +28,7 @@ drawScreen:
         kcall(drawBits)
 
         ld d, 4
-        ld e, 19
+        ld e, 18
         kld(hl, (lowerWord))
         kcall(drawBits)
 
@@ -41,9 +41,9 @@ drawScreen:
         kcall(drawBits)
 
         ld d, 0
-        ld e, 26
+        ld e, 25
         ld h, 95
-        ld l, 26
+        ld l, 25
         pcall(drawLine)
 
 
@@ -58,7 +58,7 @@ drawScreen:
 
 ;----------OldNumber-----------
         ld d, 4
-        ld e, 30
+        ld e, 27
         
         kld(a, (numberBase))
         cp 0
@@ -71,9 +71,16 @@ drawScreen:
 .oldBinaryDraw:  
         ;Draw Binary
         kld(hl, (oldUpperWord))
-        ;pcall(drawHexHL)
+        kcall(drawBits)
+        ld h, l
+        kcall(drawBits)
+
+        ld d, 4
+        ld e, 34
         kld(hl, (oldLowerWord))
-        ;pcall(drawHexHL)
+        kcall(drawBits)
+        ld h, l
+        kcall(drawBits)
         jr .oldEndDraw
 .oldHexDraw:  
         ;Draw Hex
@@ -93,7 +100,7 @@ drawScreen:
 .oldEndDraw:
 
 ;----------Operator -----------
-        ld d, 4
+        ld d, 90
         ld e, 40
         
         kld(a, (operator))
@@ -146,10 +153,19 @@ drawScreen:
 
 .binaryDraw:  
         ;Draw Binary
+        ld d, 4
+        ld e, 43
         kld(hl, (upperWord))
-        ;pcall(drawHexHL)
+        kcall(drawBits)
+        ld h, l
+        kcall(drawBits)
+
+        ld d, 4
+        ld e, 50
         kld(hl, (lowerWord))
-        ;pcall(drawHexHL)
+        kcall(drawBits)
+        ld h, l
+        kcall(drawBits)
         jr .endDraw
 .hexDraw:  
         ;Draw Hex
