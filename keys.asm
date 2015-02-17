@@ -2,8 +2,8 @@
 checkKeys:
     push af
 
-        ;cp kClear
-        cp kMode
+        cp kClear
+       ; cp kMode
         jr nz, _
         push de
         push hl
@@ -37,9 +37,10 @@ checkKeys:
         pop de
 _:
 
-        cp kDown
+        ;cp kDown
+        cp kDel
         jr nz, _
-            kcall(removeDigit)
+        kcall(removeDigit)
  _:
 
         cp kYEqu
@@ -70,7 +71,7 @@ _:
 _:
 
         cp kPlus
-        cp kRight
+        ;cp kRight
         jr nz, _
         kcall(calculate)
         kcall(mvNewToOld)
@@ -81,7 +82,7 @@ _:
 _:
 
         cp kMinus
-        cp kLeft
+        ;cp kLeft
         jr nz, _
         kcall(calculate)
         kcall(mvNewToOld)
