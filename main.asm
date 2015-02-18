@@ -39,7 +39,7 @@ start:
     kcall(checkKeys)
 
     kcall(drawScreen)
-    cp kUp
+    cp kMode
     jr nz, .loop
     ; Exit when the user presses "MODE"
 
