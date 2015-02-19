@@ -19,7 +19,7 @@ For the mathematical operations, the first number that is entered is always 32bi
 	- 32bit / 16bit
 
 ## Keybindings
-***In key.asm, set DEBUG to 0 for running on hardware or to 1 for running with the z80 emulator***
+***In keys.asm, set DEBUG to 0 for running on hardware or to 1 for running with the z80 emulator***
 
 |Function			| OnCalc	|z80e			|
 |-----------------------------|:---------------:|:---------------------:|
