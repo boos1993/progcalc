@@ -4,7 +4,7 @@ include .knightos/variables.make
 ALL_TARGETS:=$(BIN)progcalc
 
 # This is all the make targets to produce said files
-$(BIN)progcalc: main.asm
+$(BIN)progcalc: *.asm
 	mkdir -p $(BIN)
 	$(AS) $(ASFLAGS) --listing $(OUT)main.list main.asm $(BIN)progcalc
 
