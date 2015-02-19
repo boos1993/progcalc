@@ -51,6 +51,10 @@ Use this command to compile the kernel from source
    
     $ knightos init --kernel-source=/path/to/kernel progcalc
 
+To install the package in KnightOS run
+
+    $ make install PREFIX=../KnightOS/.knightos/pkgroot/
+    
 ## Installing
 
 Use `make package` to get a package that you can install.
