@@ -77,13 +77,16 @@ _:
 _:
         cp menuKey
         jr nz, _
-        ld c, 40
-        kld(hl, menu)
-        corelib(showMenu)
-        cp 0xFF
-        jr z, .cancel
-        kld((numberBase), a)
+        push af
+            ld c, 40
+            kld(hl, menu)
+            corelib(showMenu)
+            cp 0xFF
+            jr z, .cancel
+            ld a, 1
+            kld((numberBase), a)
 .cancel:
+        pop af
 _:
 
 
