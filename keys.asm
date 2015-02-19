@@ -7,7 +7,7 @@
     #define divKey kDown
     #define delKey kWindow
     #define enterKey kEnter
-    #define clearKey kClear
+    #define clearKey kTrace
     #define castleKey kYEqu
     #define threadKey kGraph
     #define menuKey kZoom
