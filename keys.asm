@@ -83,7 +83,6 @@ _:
             corelib(showMenu)
             cp 0xFF
             jr z, .cancel
-            ld a, 1
             kld((numberBase), a)
 .cancel:
         pop af

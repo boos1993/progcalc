@@ -15,7 +15,7 @@ drawScreen:
 
 ;----------Binary-----------
         ld d, 4
-        ld e, 10
+        ld e, 9
         kld(hl, (upperWord))
         kcall(drawBits)
 
@@ -28,7 +28,7 @@ drawScreen:
         kcall(drawBits)
 
         ld d, 4
-        ld e, 18
+        ld e, 17
         kld(hl, (lowerWord))
         kcall(drawBits)
 
@@ -41,9 +41,9 @@ drawScreen:
         kcall(drawBits)
 
         ld d, 0
-        ld e, 25
+        ld e, 24
         ld h, 95
-        ld l, 25
+        ld l, 24
         pcall(drawLine)
 
 
@@ -58,7 +58,7 @@ drawScreen:
 
 ;----------OldNumber-----------
         ld d, 4
-        ld e, 27
+        ld e, 26
         
         kld(a, (numberBase))
         cp 0
@@ -101,7 +101,7 @@ drawScreen:
 
 ;----------Operator -----------
         ld d, 90
-        ld e, 40
+        ld e, 38
         
         kld(a, (operator))
         cp 0
