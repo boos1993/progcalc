@@ -1,36 +1,56 @@
 # progcalc
-A programmer's calculator for KnightOS
+This is a programmer's calculator for KnightOS.
 
 
 
+## Functionality
+
+It currently supports 32bit  Decimal, Hexadecimal and Binary entry and conversion. 
+
+For the mathematical operations, the first number that is entered is always 32bit while the second number will be truncated before the operation.
+
+- Addition
+	- 32bit + 16bit
+- Subtraction
+	- 32bit - 16bit
+- Multiplication
+	- 32bit * 8bit
+- Division
+	- 32bit / 16bit
+
+## Keybindings
+***In key.asm, set DEBUG to 0 for running on hardware or to 1 for running with the z80 emulator***
+
+|Function			| OnCalc	|z80e			|
+|-----------------------------|:---------------:|:---------------------:|
+|Back to Castle 	| Y=		|F1				|
+|Delete Digit	 	| Del		|F2				|
+|Open Base Menu	| Zoom	|F3				|
+|Clear Entry	 	| Clear		|F4				|
+|Thread Switcher	| Graph	|F5				|
+|Add			 	| +			|Right Arrow	|
+|Subtract		 	| -			|Left Arrow	|
+|Multiply			| x			|Up Arrow		|
+|Divide			| /			|Down Arrow	|
+|Enter				|Enter		|Enter/Return	|
+|Quit				|Mode		|ESC			|
 
 
+## Compiling
+***Requires a version of the kernel that includes drawDecHL and drawDecACIX. ***
 
+First, install the [KnightOS SDK](http://www.knightos.org/sdk).
 
+Then in the base directory of this repository, run
 
+    $ knightos init progcalc
+    $ make
+    $ make run
 
-To add progcalc to the Castle homescreen, go to /KnightOS/config/castle.conf.asm
+Use this command to compile the kernel from source
+   
+    $ knightos init --kernel-source=/path/to/kernel progcalc
 
-change one of the blank apps from
+## Installing
 
-.dw 0xFFFF
-
-to this:
-
-.dw progcalcStr, progcalcPath
-.db 0xff, 0xff, 0x80, 0x01, 0xa0, 0x01, 0xa0, 0x01
-.db 0xa0, 0x01, 0x84, 0x21, 0x84, 0x21, 0x84, 0x21
-.db 0x87, 0xe1, 0x84, 0x21, 0x84, 0x21, 0x84, 0x21
-.db 0x80, 0x01, 0x80, 0x01, 0x80, 0x01, 0xff, 0xff
-
-At the bottom of the file, add 
-
-progcalcStr:
-    .db "Programming Calc", 0
-progcalcPath:
-    .db "/bin/progcalc", 0
-
-Then from the KnightOS repository root directory, run the following command to compile your configurations:
-
-sass config/castle.conf.asm config/castle.conf
-
+Use `make package` to get a package that you can install.
