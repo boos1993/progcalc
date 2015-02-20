@@ -54,6 +54,13 @@ Use this command to compile the kernel from source
     
 ## Installing
 
+###Using SDK
+
+The package can be found at [packages.knightos.org](https://packages.knightos.org/community/progcalc) and installed using:
+
+    $ knightos install community/progcalc
+
+###Manual
 Use `make package` to get a package that you can install.
 
 To install the package in [KnightOS](https://github.com/KnightOS/KnightOS) run
