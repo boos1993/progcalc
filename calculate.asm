@@ -244,7 +244,40 @@ calculate:
         kjp(.endOP)
 
 .and:
-        ;AND
+        ;AND [32bit = 32bit and 32bit]
+        push hl
+        push af
+        push bc
+
+            ;UpperWord
+            kld(hl, (oldUpperWord))
+            ld b, h
+            ld c, l
+            kld(hl, (upperWord))
+            ld a, b
+            and h
+            ld h, a
+            ld a, c
+            and l
+            ld l, a
+            kld((upperWord), hl)
+
+            ;LowerWord
+            kld(hl, (oldLowerWord))
+            ld b, h
+            ld c, l
+            kld(hl, (lowerWord))
+            ld a, b
+            and h
+            ld h, a
+            ld a, c
+            and l
+            ld l, a
+            kld((lowerWord), hl)
+
+        pop bc
+        pop af
+        pop hl
         kjp(.endOP)
 
 .xor:
