@@ -205,7 +205,42 @@ calculate:
         kjp(.endOP)
 
 .or:
-        ;OR
+        ;OR [32bit = 32bit or 32bit]
+        push hl
+        push af
+        push bc
+
+            ;UpperWord
+            kld(hl, (oldUpperWord))
+            ld b, h
+            ld c, l
+            kld(hl, (upperWord))
+            ld a, b
+            or h
+            ld h, a
+            ld a, c
+            or l
+            ld l, a
+            kld((upperWord), hl)
+
+            ;LowerWord
+            kld(hl, (oldLowerWord))
+            ld b, h
+            ld c, l
+            kld(hl, (lowerWord))
+            ld a, b
+            or h
+            ld h, a
+            ld a, c
+            or l
+            ld l, a
+            kld((lowerWord), hl)
+
+        pop bc
+        pop af
+        pop hl
+
+
         kjp(.endOP)
 
 .and:
