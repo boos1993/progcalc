@@ -281,7 +281,40 @@ calculate:
         kjp(.endOP)
 
 .xor:
-        ;XOR
+        ;XOR [32bit = 32bit xor 32bit]
+        push hl
+        push af
+        push bc
+
+            ;UpperWord
+            kld(hl, (oldUpperWord))
+            ld b, h
+            ld c, l
+            kld(hl, (upperWord))
+            ld a, b
+            xor h
+            ld h, a
+            ld a, c
+            xor l
+            ld l, a
+            kld((upperWord), hl)
+
+            ;LowerWord
+            kld(hl, (oldLowerWord))
+            ld b, h
+            ld c, l
+            kld(hl, (lowerWord))
+            ld a, b
+            xor h
+            ld h, a
+            ld a, c
+            xor l
+            ld l, a
+            kld((lowerWord), hl)
+
+        pop bc
+        pop af
+        pop hl
         kjp(.endOP)
 
 .not:
