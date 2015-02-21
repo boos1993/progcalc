@@ -178,6 +178,7 @@ mvNewToOld:
 #include "calculate.asm"
 #include "drawScreen.asm"
 #include "keys.asm"
+#include "mathSelect.asm"
 menu:
     .db 3
     .db "Decimal", 0

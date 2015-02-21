@@ -1,3 +1,4 @@
+
 #define DEBUG 1
 
 #if DEBUG
@@ -5,12 +6,13 @@
     #define minusKey kLeft
     #define mulKey kUp
     #define divKey kDown
-    #define delKey kWindow
+    #define delKey kDel
     #define enterKey kEnter
     #define clearKey kTrace
     #define castleKey kYEqu
     #define threadKey kGraph
     #define menuKey kZoom
+    #define mathKey kWindow
 #else
     #define plusKey kPlus
     #define minusKey kMinus
@@ -22,6 +24,7 @@
     #define castleKey kYEqu
     #define threadKey kGraph
     #define menuKey kZoom
+    #define mathKey kMath
 #endif
 
 checkKeys:
@@ -88,6 +91,13 @@ _:
         pop af
 _:
 
+        cp mathKey
+        jr nz, _
+        push af
+            kcall(mathSelect)
+        pop af
+        ;Pop-Up list to select more operators
+_:
 
 ;----------Operators-----------
         cp enterKey
