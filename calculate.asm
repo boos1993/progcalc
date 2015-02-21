@@ -16,6 +16,21 @@ calculate:
         kjp(z, .mul)
         cp 4
         kjp(z, .div)
+        cp 5
+        kjp(z, .mod)
+        cp 6
+        kjp(z, .lsh)
+        cp 7
+        kjp(z, .rsh)
+        cp 8
+        kjp(z, .or)
+        cp 9
+        kjp(z, .and)
+        cp 10
+        kjp(z, .xor)
+        cp 11
+        kjp(z, .not)
+
 
 .noOP:
         ;No Operator
@@ -147,6 +162,64 @@ calculate:
         pop bc
         pop af
         kjp(.endOP)
+
+.mod:
+        ;Modulo [HL = Remainder of ACIX / DE]
+        push af
+        push bc
+        push ix
+        push de
+        push hl
+            ;Load Old Number
+            kld(hl, (oldUpperWord))
+            ld a, h
+            ld c, l
+            kld(ix, (oldLowerWord))
+            
+            ;Load New Number
+            push hl
+                kld(hl, (lowerWord))
+                ld d, h
+                ld e, l
+            pop hl
+
+            pcall(div32By16)
+            
+            ;Store ACIX into newNumber
+            kld((lowerWord), hl)
+            ld hl, 0
+            kld((upperWord), hl)
+        pop hl
+        pop de
+        pop ix
+        pop bc
+        pop af
+        kjp(.endOP)
+
+.lsh:
+        ;Left Shift
+        kjp(.endOP)
+
+.rsh:
+        ;Right Shift
+        kjp(.endOP)
+
+.or:
+        ;OR
+        kjp(.endOP)
+
+.and:
+        ;AND
+        kjp(.endOP)
+
+.xor:
+        ;XOR
+        kjp(.endOP)
+
+.not:
+        ;NOT
+        kjp(.endOP)
+
 
 .endOP:
         ;Clear Operator

@@ -91,13 +91,6 @@ _:
         pop af
 _:
 
-        cp mathKey
-        jr nz, _
-        push af
-            kcall(mathSelect)
-        pop af
-        ;Pop-Up list to select more operators
-_:
 
 ;----------Operators-----------
         cp enterKey
@@ -145,6 +138,19 @@ _:
         pop af
 _:
 
+        cp mathKey
+        jr nz, _
+        push af
+            kcall(mathSelect) ;Returns the selected operator
+            cp 0
+            jr z, .cancelMath
+            kcall(calculate)
+            kcall(mvNewToOld)
+            kld((operator), a)
+.cancelMath:
+        pop af
+        ;Pop-Up list to select more operators
+_:
 
 ;------------Digits------------
         cp k0

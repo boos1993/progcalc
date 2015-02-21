@@ -114,28 +114,66 @@ drawScreen:
         jr z, .drawMul
         cp 4
         jr z, .drawDiv
-
+        cp 5
+        jr z, .drawMod
+        cp 6
+        jr z, .drawLSH
+        cp 7
+        jr z, .drawRSH
+        cp 8
+        jr z, .drawOR
+        cp 9
+        jr z, .drawAND
+        cp 10
+        jr z, .drawXOR
+        cp 11
+        jr z, .drawNOT
 
 .drawPlus:
         ld a, '+'
         pcall(drawChar)
         jr .drawNewNumber
-
 .drawMinus:
         ld a, '-'
         pcall(drawChar)
         jr .drawNewNumber
-
 .drawMul:
         ld a, '*'
         pcall(drawChar)
         jr .drawNewNumber
-
 .drawDiv:
         ld a, '/'
         pcall(drawChar)
         jr .drawNewNumber
 
+.drawMOD:
+        ld a, 'M'
+        pcall(drawChar)
+        jr .drawNewNumber
+.drawLSH:
+        ld a, '<'
+        pcall(drawChar)
+        jr .drawNewNumber
+.drawRSH:
+        ld a, '>'
+        pcall(drawChar)
+        jr .drawNewNumber
+.drawOR:
+        ld a, '|'
+        pcall(drawChar)
+        jr .drawNewNumber
+.drawAND:
+        ld a, '&'
+        pcall(drawChar)
+        jr .drawNewNumber
+.drawXOR:
+        ld a, 'X'
+        pcall(drawChar)
+        jr .drawNewNumber
+.drawNOT:
+        ld a, '`'
+        pcall(drawChar)
+        jr .drawNewNumber
 
 
 ;----------NewNumber-----------
