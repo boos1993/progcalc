@@ -2,12 +2,13 @@
 This is a programmer's calculator for KnightOS.
 
 
-
 ## Functionality
 
 It currently supports 32bit  Decimal, Hexadecimal and Binary entry and conversion. 
 
 For the mathematical operations, the first number that is entered is always 32bit while the second number will be truncated before the operation.
+
+###Primary:
 
 - Addition
 	- 32bit + 16bit
@@ -18,22 +19,41 @@ For the mathematical operations, the first number that is entered is always 32bi
 - Division
 	- 32bit / 16bit
 
+###Secondary:
+***These can be reached by pressing the Graph Vars key.***
+
+- Modulo
+        - 32bit mod 16bit
+- Left-Shift
+        - 32bit << 0-63 places
+- Right-Shift
+        - 32bit >> 0-63 places
+- Bitwise OR
+        - 32bit or 32bit
+- Bitwise AND
+        - 32bit and 32bit
+- Bitwise XOR
+        - 32bit xor 32bit
+- Bitwise NOT
+        - ~32bit
+
 ## Keybindings
 ***In keys.asm, set DEBUG to 0 for running on hardware or to 1 for running with the z80 emulator***
 
-|Function			| OnCalc	|z80e			|
+|Function			| OnCalc	|z80e				|
 |-----------------------------|:---------------:|:---------------------:|
-|Back to Castle 	| Y=		|F1				|
-|Delete Digit	 	| Del		|F2				|
-|Open Base Menu	| Zoom	|F3				|
+|Back to Castle 	| Y=			|F1				|
+|Delete Digit	 	| Del		|Del				|
+|Open Base Menu	| Zoom		|F3				|
 |Clear Entry	 	| Clear		|F4				|
-|Thread Switcher	| Graph	|F5				|
-|Add			 	| +			|Right Arrow	|
-|Subtract		 	| -			|Left Arrow	|
+|Thread Switcher	| Graph		|F5				|
+|Add			| +			|Right Arrow		|
+|Subtract		 	| -			|Left Arrow		|
 |Multiply			| x			|Up Arrow		|
-|Divide			| /			|Down Arrow	|
-|Enter				|Enter		|Enter/Return	|
-|Quit				|Mode		|ESC			|
+|Divide			| /			|Down Arrow		|
+|Extra Functions	| Graph Var	|F2				|
+|Enter			|Enter		|Enter/Return		|
+|Quit			|Mode		|ESC			|
 
 
 ## Compiling
