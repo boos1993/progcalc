@@ -23,19 +23,19 @@ For the mathematical operations, the first number that is entered is always 32bi
 ***These can be reached by pressing the Graph Vars key.***
 
 - Modulo
-        - 32bit mod 16bit
+	- 32bit mod 16bit
 - Left-Shift
-        - 32bit << 0-63 places
+	- 32bit << 0-63 places
 - Right-Shift
-        - 32bit >> 0-63 places
+	- 32bit >> 0-63 places
 - Bitwise OR
-        - 32bit or 32bit
+	- 32bit or 32bit
 - Bitwise AND
-        - 32bit and 32bit
+	- 32bit and 32bit
 - Bitwise XOR
-        - 32bit xor 32bit
+	- 32bit xor 32bit
 - Bitwise NOT
-        - ~32bit
+	- ~32bit
 
 ## Keybindings
 ***In keys.asm, set DEBUG to 0 for running on hardware or to 1 for running with the z80 emulator***
