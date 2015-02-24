@@ -219,6 +219,7 @@ calculate:
             ld a, h
             rl a
             ld h, a
+
             ld a, 0
             jr nc, _
             ld a, 1
@@ -257,6 +258,63 @@ _:
 
 .rsh:
         ;Right Shift
+
+        push hl
+        push de
+        push af
+        push bc
+            kld(hl, (lowerWord))
+            ld a, l
+            and 63    ;Mask off the upper 2 bits
+            cp 0
+            jr z, .cancelShiftRight
+            ld b, a
+.shiftRightLoop:
+            ld d, 0
+            ld e, 0
+            kld(hl, (oldUpperWord))
+
+            ld a, h
+            rr a
+            ld h, a
+            ld a, l
+            rr a
+            ld l, a
+
+            ld a, 0
+            jr nc, _
+            ld a, 128
+_:
+
+            add hl, de
+            kld((oldUpperWord), hl)
+
+
+            ld d, a
+            ld e, 0
+            kld(hl, (oldLowerWord))
+
+            ld a, h
+            rr a
+            ld h, a
+            ld a, l
+            rr a
+            ld l, a
+
+            add hl, de
+            kld((oldLowerWord), hl)
+
+            djnz .shiftRightLoop
+.cancelShiftRight:
+            kld(hl, (oldUpperWord))
+            kld((upperWord), hl)
+            kld(hl, (oldLowerWord))
+            kld((lowerWord), hl)
+        pop bc
+        pop af
+        pop de
+        pop hl
+
         kjp(.endOP)
 
 .or:
