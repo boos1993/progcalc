@@ -24,7 +24,7 @@
     #define castleKey kYEqu
     #define threadKey kGraph
     #define menuKey kZoom
-    #define mathKey kMath
+    #define mathKey kGraphVar
 #endif
 
 checkKeys:

@@ -198,6 +198,61 @@ calculate:
 
 .lsh:
         ;Left Shift
+        push hl
+        push de
+        push af
+        push bc
+            kld(hl, (lowerWord))
+            ld a, l
+            and 63    ;Mask off the upper 2 bits
+            cp 0
+            jr z, .cancelShiftLeft
+            ld b, a
+.shiftLoop:
+            ld d, 0
+            ld e, 0
+            kld(hl, (oldLowerWord))
+
+            ld a, l
+            rl a
+            ld l, a
+            ld a, h
+            rl a
+            ld h, a
+            ld a, 0
+            jr nc, _
+            ld a, 1
+_:
+
+            add hl, de
+            kld((oldLowerWord), hl)
+
+
+            ld d, 0
+            ld e, a
+            kld(hl, (oldUpperWord))
+
+            ld a, l
+            rl a
+            ld l, a
+            ld a, h
+            rl a
+            ld h, a
+
+            add hl, de
+            kld((oldUpperWord), hl)
+
+            djnz .shiftLoop
+.cancelShiftLeft:
+            kld(hl, (oldUpperWord))
+            kld((upperWord), hl)
+            kld(hl, (oldLowerWord))
+            kld((lowerWord), hl)
+        pop bc
+        pop af
+        pop de
+        pop hl
+
         kjp(.endOP)
 
 .rsh:
