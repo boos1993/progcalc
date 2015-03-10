@@ -1,19 +1,3 @@
-
-#define DEBUG 1
-
-#if DEBUG
-    #define plusKey kRight
-    #define minusKey kLeft
-    #define mulKey kUp
-    #define divKey kDown
-    #define delKey kDel
-    #define enterKey kEnter
-    #define clearKey kTrace
-    #define castleKey kYEqu
-    #define threadKey kGraph
-    #define menuKey kZoom
-    #define mathKey kWindow
-#else
     #define plusKey kPlus
     #define minusKey kMinus
     #define mulKey kMul
@@ -25,7 +9,6 @@
     #define threadKey kGraph
     #define menuKey kZoom
     #define mathKey kGraphVar
-#endif
 
 checkKeys:
     push af
