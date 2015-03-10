@@ -51,8 +51,14 @@ _:
 
 drawList:
     pcall(clearBuffer)
+
+    kld(hl, message)
     ld d, 4
-    ld e, 10
+    ld e, 56
+    pcall(drawStr)
+
+    ld d, 4
+    ld e, 4
 
     kld(hl, operatorList)
     inc hl
@@ -95,14 +101,16 @@ drawList:
     pcall(fastCopy)
     ret
 
+
+message:
+    .db "Press [MODE] to cancel", 0
 operatorList:
-    .db 7
+    .db 6
     .db "x mod y", 0
     .db "x << y", 0
     .db "x >> y", 0
     .db "x or y", 0
     .db "x and y", 0
     .db "x xor y", 0
-    .db "x not", 0
  
 
