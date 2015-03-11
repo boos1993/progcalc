@@ -34,8 +34,6 @@ For the mathematical operations, the first number that is entered is always 32bi
 	- 32bit and 32bit
 - Bitwise XOR
 	- 32bit xor 32bit
-- Bitwise NOT
-	- ~32bit
 
 ## Keybindings
 ***In keys.asm, set DEBUG to 0 for running on hardware or to 1 for running with the z80 emulator***
