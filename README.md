@@ -41,15 +41,15 @@ For the mathematical operations, the first number that is entered is always 32bi
 |Function			| OnCalc	|z80e				|
 |-----------------------------|:---------------:|:---------------------:|
 |Back to Castle 	| Y=			|F1				|
-|Delete Digit	 	| Del		|Del				|
 |Open Base Menu	| Zoom		|F3				|
-|Clear Entry	 	| Clear		|F4				|
 |Thread Switcher	| Graph		|F5				|
-|Add			| +			|Right Arrow		|
-|Subtract		 	| -			|Left Arrow		|
-|Multiply			| x			|Up Arrow		|
-|Divide			| /			|Down Arrow		|
-|Extra Functions	| Graph Var	|F2				|
+|Delete Digit	 	| Del		|Delete				|
+|Clear Entry	 	| Clear		|Right Shift				|
+|Add			| +			|Numpad +		|
+|Subtract		 	| -			|Numpad -		|
+|Multiply			| x			|Numpad *		|
+|Divide			| /			|Numpad /		|
+|Extra Functions	| Graph Var	|+/=				|
 |Enter			|Enter		|Enter/Return		|
 |Quit			|Mode		|ESC			|
 
