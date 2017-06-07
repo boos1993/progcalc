@@ -8,7 +8,7 @@ It currently supports 32bit  Decimal, Hexadecimal and Binary entry and conversio
 
 For the mathematical operations, the first number that is entered is always 32bit while the second number will be truncated before the operation.
 
-###Primary:
+### Primary:
 
 - Addition
 	- 32bit + 16bit
@@ -19,7 +19,7 @@ For the mathematical operations, the first number that is entered is always 32bi
 - Division
 	- 32bit / 16bit
 
-###Secondary:
+### Secondary:
 ***These can be reached by pressing the Graph Vars key.***
 
 - Modulo
@@ -72,13 +72,13 @@ Use this command to compile the kernel from source
     
 ## Installing
 
-###Using SDK
+### Using SDK
 
 The package can be found at [packages.knightos.org](https://packages.knightos.org/community/progcalc) and installed using:
 
     $ knightos install community/progcalc
 
-###Manual
+### Manual
 Use `make package` to get a package that you can install.
 
 To install the package in [KnightOS](https://github.com/KnightOS/KnightOS) run
